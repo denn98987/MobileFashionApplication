@@ -10,9 +10,6 @@ const MainScreen = ({navigation}) => {
           title="Launch Camera"
           onPress={() => navigation.navigate('Camera')}
         />
-        {/*<Button >*/}
-        {/*  Launch Camera*/}
-        {/*</Button>*/}
       </TouchableOpacity>
     </View>
   );
