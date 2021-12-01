@@ -47,42 +47,34 @@ const CameraScreen = ({navigation}) => {
 const UploadPhoto = async photoData => {
   let rawImage = photoData.base64;
   let body = new FormData();
-  body.append('photo', {
-    image: rawImage,
-    type: 'image/png',
-  });
-  body.append('Content-Type', 'image/png');
+  body.append('image', rawImage);
+  //body.append('Content-Type', 'image/png');
 
   fetch('https://product-detecting.herokuapp.com/api/image', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'multipart/form-data',
-      otherHeader: 'foo',
-    },
+    headers: {'Content-Type': 'multipart/form-data'},
     body: body,
   }).then(resp => {
     console.log(resp);
   });
 };
+const handleResponse = ({target}) => {
+  console.log(target.responseText);
+};
 
 const sendBase64ToServer = photoData => {
-  const rawImage = photoData.base64;
-
-  let httpPost = new XMLHttpRequest();
-  const path = 'https://product-detecting.herokuapp.com/api/image';
-  const data = JSON.stringify({image: rawImage});
-
-  httpPost.onreadystatechange = function (err) {
-    if (this.readyState === 4 && this.status === 200) {
-      console.log(this.responseText);
-    } else {
-      console.log(err);
-    }
+  let image = {
+    uri: photoData.uri,
+    type: 'image/jpeg',
+    name: 'photo.jpg',
   };
+  const xhr = new XMLHttpRequest();
+  const data = new FormData();
 
-  httpPost.open('POST', path, true);
-  httpPost.setRequestHeader('Content-Type', 'application/json');
-  httpPost.send(data);
+  data.append('image', image);
+  xhr.addEventListener('load', handleResponse);
+  xhr.open('POST', 'https://product-detecting.herokuapp.com/api/image');
+  xhr.send(data);
 };
 
 const styles = StyleSheet.create({
