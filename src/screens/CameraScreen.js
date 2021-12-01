@@ -8,7 +8,9 @@ const CameraScreen = ({navigation}) => {
 
   useEffect(() => {
     (async () => {
-      console.log('in camera permissions request. Permission state: ' + hasPermission);
+      console.log(
+        'in camera permissions request. Permission state: ' + hasPermission,
+      );
       const {status} = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === 'granted');
     })();
@@ -34,25 +36,53 @@ const CameraScreen = ({navigation}) => {
         title="Take photo"
         onPress={async () => {
           const photo = await camera.takePictureAsync({base64: true});
-          //console.log(photo);
           navigation.navigate('PhotoScreen', {inputPhoto: photo});
-          UploadPhoto(photo);
+          await sendBase64ToServer(photo);
         }}
       />
     </View>
   );
 };
 
-const UploadPhoto = photoData => {
+const UploadPhoto = async photoData => {
   let rawImage = photoData.base64;
-  let uploadData = new FormData();
-  uploadData.append('image', rawImage);
-  fetch('https://product-detecting.herokuapp.com/', {
-    method: 'post',
-    body: uploadData,
+  let body = new FormData();
+  body.append('photo', {
+    image: rawImage,
+    type: 'image/png',
+  });
+  body.append('Content-Type', 'image/png');
+
+  fetch('https://product-detecting.herokuapp.com/api/image', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      otherHeader: 'foo',
+    },
+    body: body,
   }).then(resp => {
     console.log(resp);
   });
+};
+
+const sendBase64ToServer = photoData => {
+  const rawImage = photoData.base64;
+
+  let httpPost = new XMLHttpRequest();
+  const path = 'https://product-detecting.herokuapp.com/api/image';
+  const data = JSON.stringify({image: rawImage});
+
+  httpPost.onreadystatechange = function (err) {
+    if (this.readyState === 4 && this.status === 200) {
+      console.log(this.responseText);
+    } else {
+      console.log(err);
+    }
+  };
+
+  httpPost.open('POST', path, true);
+  httpPost.setRequestHeader('Content-Type', 'application/json');
+  httpPost.send(data);
 };
 
 const styles = StyleSheet.create({
