@@ -35,7 +35,7 @@ const CameraScreen = ({navigation}) => {
       <Button
         title="Take photo"
         onPress={async () => {
-          const photo = await camera.takePictureAsync({base64: true});
+          const photo = await camera.takePictureAsync();
           navigation.navigate('PhotoScreen', {inputPhoto: photo});
           await sendBase64ToServer(photo);
         }}
@@ -44,20 +44,6 @@ const CameraScreen = ({navigation}) => {
   );
 };
 
-const UploadPhoto = async photoData => {
-  let rawImage = photoData.base64;
-  let body = new FormData();
-  body.append('image', rawImage);
-  //body.append('Content-Type', 'image/png');
-
-  fetch('https://product-detecting.herokuapp.com/api/image', {
-    method: 'POST',
-    headers: {'Content-Type': 'multipart/form-data'},
-    body: body,
-  }).then(resp => {
-    console.log(resp);
-  });
-};
 const handleResponse = ({target}) => {
   console.log(target.responseText);
 };
