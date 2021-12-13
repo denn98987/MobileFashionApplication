@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ImageBackground, TouchableOpacity, View } from "react-native";
+import {Button, ImageBackground, TouchableOpacity, View} from 'react-native';
 
 const PhotoScreen = ({route, navigation}) => {
   return (

@@ -1,6 +1,6 @@
 import React from 'react';
-
-import {Button, Text, TouchableOpacity, View} from 'react-native';
+import {Button, TouchableOpacity, View} from 'react-native';
+import takePhotoFromGallery from '../components/TakePhotoFromGallery';
 
 const MainScreen = ({navigation}) => {
   return (
@@ -9,6 +9,12 @@ const MainScreen = ({navigation}) => {
         <Button
           title="Launch Camera"
           onPress={() => navigation.navigate('Camera')}
+        />
+        <Button
+          title="Take photo from gallery"
+          onPress={() => {
+            takePhotoFromGallery();
+          }}
         />
       </TouchableOpacity>
     </View>

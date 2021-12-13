@@ -1,9 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, Button} from 'react-native';
 import {Camera} from 'expo-camera';
+import {useIsFocused} from '@react-navigation/core';
+import postData from '../components/PostData';
 
 const CameraScreen = ({navigation}) => {
   const [hasPermission, setHasPermission] = useState(null);
+  const isFocused = useIsFocused();
   let camera: Camera;
 
   useEffect(() => {
@@ -16,51 +19,30 @@ const CameraScreen = ({navigation}) => {
     })();
   }, []);
 
-  if (hasPermission === null) {
-    return <View />;
-  }
-
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
+  } else if (hasPermission !== null && isFocused) {
+    return (
+      <View style={styles.container}>
+        <Camera
+          style={styles.camera}
+          ref={r => {
+            camera = r;
+          }}
+        />
+        <Button
+          title="Take photo"
+          onPress={async () => {
+            const photo = await camera.takePictureAsync();
+            navigation.navigate('PhotoScreen', {inputPhoto: photo});
+            await postData(photo);
+          }}
+        />
+      </View>
+    );
+  } else {
+    return <View />;
   }
-
-  return (
-    <View style={styles.container}>
-      <Camera
-        style={styles.camera}
-        ref={r => {
-          camera = r;
-        }}
-      />
-      <Button
-        title="Take photo"
-        onPress={async () => {
-          const photo = await camera.takePictureAsync();
-          navigation.navigate('PhotoScreen', {inputPhoto: photo});
-          await sendBase64ToServer(photo);
-        }}
-      />
-    </View>
-  );
-};
-
-const handleResponse = ({target}) => {
-  console.log(target.responseText);
-};
-
-const sendBase64ToServer = photoData => {
-  let image = {
-    uri: photoData.uri,
-    type: 'image/jpeg',
-    name: 'photo.jpg',
-  };
-  const xhr = new XMLHttpRequest();
-  const data = new FormData();
-
-  data.append('image', image);
-  xhr.addEventListener('load', handleResponse);
-  xhr.open('POST', 'https://product-detecting.herokuapp.com/api/image');
-  xhr.send(data);
 };
 
 const styles = StyleSheet.create({
