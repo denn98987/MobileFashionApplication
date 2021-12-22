@@ -3,6 +3,7 @@ import {StyleSheet, Text, View, Button} from 'react-native';
 import {Camera} from 'expo-camera';
 import {useIsFocused} from '@react-navigation/core';
 import postData from '../components/PostData';
+import AddImageToAlbum from '../components/HistoryAlbum';
 
 const CameraScreen = ({navigation}) => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -17,7 +18,7 @@ const CameraScreen = ({navigation}) => {
       const {status} = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === 'granted');
     })();
-  }, []);
+  }, [hasPermission]);
 
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
@@ -36,6 +37,7 @@ const CameraScreen = ({navigation}) => {
             const photo = await camera.takePictureAsync();
             navigation.navigate('PhotoScreen', {inputPhoto: photo});
             await postData(photo);
+            await AddImageToAlbum(photo);
           }}
         />
       </View>

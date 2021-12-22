@@ -1,6 +1,7 @@
 import React from 'react';
 import {launchImageLibrary} from 'react-native-image-picker';
 import postData from './PostData';
+import AddImageToAlbum from '../components/HistoryAlbum';
 
 const takePhotoFromGallery = () => {
   let options = {
@@ -19,6 +20,7 @@ const takePhotoFromGallery = () => {
       alert(response.customButton);
     } else {
       postData(response.assets[0]);
+      AddImageToAlbum(response.assets[0]);
     }
   });
 };
