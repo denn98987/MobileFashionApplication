@@ -1,6 +1,7 @@
 import React from 'react';
 import {Button, TouchableOpacity, View} from 'react-native';
 import takePhotoFromGallery from '../components/TakePhotoFromGallery';
+import {ShowHistory} from '../components/HistoryAlbum';
 
 const MainScreen = ({navigation}) => {
   return (
@@ -16,6 +17,7 @@ const MainScreen = ({navigation}) => {
             takePhotoFromGallery();
           }}
         />
+        <ShowHistory />
       </TouchableOpacity>
     </View>
   );

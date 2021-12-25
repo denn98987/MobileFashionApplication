@@ -1,7 +1,7 @@
 import React from 'react';
 import {launchImageLibrary} from 'react-native-image-picker';
 import postData from './PostData';
-import AddImageToAlbum from '../components/HistoryAlbum';
+import {AddImageToAlbum} from './HistoryAlbum';
 
 const takePhotoFromGallery = () => {
   let options = {

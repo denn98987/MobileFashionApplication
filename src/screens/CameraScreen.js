@@ -3,7 +3,7 @@ import {StyleSheet, Text, View, Button} from 'react-native';
 import {Camera} from 'expo-camera';
 import {useIsFocused} from '@react-navigation/core';
 import postData from '../components/PostData';
-import AddImageToAlbum from '../components/HistoryAlbum';
+import {AddImageToAlbum} from '../components/HistoryAlbum';
 
 const CameraScreen = ({navigation}) => {
   const [hasPermission, setHasPermission] = useState(null);
