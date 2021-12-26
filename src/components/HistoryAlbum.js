@@ -11,13 +11,13 @@ import * as MediaLibrary from 'expo-media-library';
 const albumName = 'FashionApp';
 
 const askPermission = async () => {
-  const isCameraRolledEnabled = await MediaLibrary.getAsync();
+  const isCameraRolledEnabled = await MediaLibrary.getPermissionsAsync();
   if (isCameraRolledEnabled.granted) {
     return true;
   }
-  const permission = await MediaLibrary.askAsync();
+  const permission = await MediaLibrary.requestPermissionsAsync();
   if (permission.status === 'granted') {
-    const cameraRollRes = await MediaLibrary.getAsync();
+    const cameraRollRes = await MediaLibrary.getPermissionsAsync();
     console.log('permissions for access to gallery: ' + cameraRollRes);
     return true;
   } else {
@@ -27,14 +27,12 @@ const askPermission = async () => {
 };
 
 const AddImageToAlbum = async photo => {
-  if (askPermission) {
-    const album = await MediaLibrary.getAlbumAsync(albumName);
-    const asset = await MediaLibrary.createAssetAsync(photo.uri);
-    if (album) {
-      await MediaLibrary.addAssetsToAlbumAsync(asset, album, false);
-    } else {
-      await MediaLibrary.createAlbumAsync(albumName, asset, false);
-    }
+  const album = await MediaLibrary.getAlbumAsync(albumName);
+  const asset = await MediaLibrary.createAssetAsync(photo.uri);
+  if (album) {
+    await MediaLibrary.addAssetsToAlbumAsync(asset, album, false);
+  } else {
+    await MediaLibrary.createAlbumAsync(albumName, asset, false);
   }
 };
 
@@ -44,12 +42,14 @@ const ShowHistory = () => {
 
   useEffect(() => {
     const getAssets = async () => {
-      const album = await MediaLibrary.getAlbumAsync(albumName);
-      console.log(album);
-      if (album) {
-        const assetsInAlbum = await MediaLibrary.getAssetsAsync({album});
-        console.log(assetsInAlbum);
-        updateAssetsList(assetsInAlbum);
+      if (await askPermission()) {
+        const album = await MediaLibrary.getAlbumAsync(albumName);
+        console.log(album);
+        if (album) {
+          const assetsInAlbum = await MediaLibrary.getAssetsAsync({album});
+          console.log(assetsInAlbum);
+          updateAssetsList(assetsInAlbum);
+        }
       }
     };
     getAssets();
