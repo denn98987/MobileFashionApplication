@@ -18,7 +18,6 @@ const askPermission = async () => {
   const permission = await MediaLibrary.requestPermissionsAsync();
   if (permission.status === 'granted') {
     const cameraRollRes = await MediaLibrary.getPermissionsAsync();
-    console.log('permissions for access to gallery: ' + cameraRollRes);
     return true;
   } else {
     console.log('User didnt take permission for using his gallery');
@@ -26,9 +25,22 @@ const askPermission = async () => {
   }
 };
 
+const TakeAssetsFromAlbum = async () => {
+  if (await askPermission()) {
+    const album = await MediaLibrary.getAlbumAsync(albumName);
+    const assetsInAlbum = await MediaLibrary.getAssetsAsync({album});
+    if (album) {
+      return assetsInAlbum;
+    } else {
+      return null;
+    }
+  }
+};
+
 const AddImageToAlbum = async photo => {
   const album = await MediaLibrary.getAlbumAsync(albumName);
   const asset = await MediaLibrary.createAssetAsync(photo.uri);
+  console.log('new image in album');
   if (album) {
     await MediaLibrary.addAssetsToAlbumAsync(asset, album, false);
   } else {
@@ -36,26 +48,19 @@ const AddImageToAlbum = async photo => {
   }
 };
 
-const ShowHistory = () => {
+const ShowHistory = ({assets}) => {
   const [loading, setLoading] = React.useState(false);
-  const [assetsInAlbum, updateAssetsList] = React.useState(null);
+  const [permission, setPermissions] = React.useState(false);
 
   useEffect(() => {
-    const getAssets = async () => {
-      if (await askPermission()) {
-        const album = await MediaLibrary.getAlbumAsync(albumName);
-        console.log(album);
-        if (album) {
-          const assetsInAlbum = await MediaLibrary.getAssetsAsync({album});
-          console.log(assetsInAlbum);
-          updateAssetsList(assetsInAlbum);
-        }
-      }
+    const getAssets = () => {
+      const askPermissionResult = askPermission();
+      setPermissions(askPermissionResult);
     };
     getAssets();
   }, []);
 
-  if (assetsInAlbum && assetsInAlbum) {
+  if (assets && permission) {
     return (
       <ScrollView
         style={styles.ImageContainer}
@@ -65,23 +70,12 @@ const ShowHistory = () => {
           justifyContent: 'center',
         }}
         horizontal={false}>
-        {assetsInAlbum.assets.map((asset, i) => {
+        {assets.assets.map((asset, i) => {
           return (
-            <View
-              style={{
-                padding: 5,
-              }}
-              key={i}>
+            <View key={i}>
               <Image
                 source={{uri: asset.uri}}
-                style={[
-                  styles.Image,
-                  {
-                    width: i % 2 === 1 ? 150 : 95,
-                    height: i % 2 === 1 ? 150 : 95,
-                  },
-                ]}
-                resizeMode="center"
+                style={styles.Image}
                 onLoadStart={() => setLoading(true)}
                 onLoadEnd={() => setLoading(false)}
               />
@@ -109,14 +103,11 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   Image: {
-    shadowColor: 'black',
-    shadowOffset: {
-      width: -10,
-      height: 9,
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 2,
+    width: 110,
+    height: 140,
+    margin: 10,
+    borderRadius: 10,
   },
 });
 
-export {AddImageToAlbum, ShowHistory};
+export {AddImageToAlbum, ShowHistory, TakeAssetsFromAlbum, albumName};

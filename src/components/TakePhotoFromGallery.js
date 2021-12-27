@@ -3,14 +3,14 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import postData from './PostData';
 import {AddImageToAlbum} from './HistoryAlbum';
 
-const takePhotoFromGallery = () => {
+const takePhotoFromGallery = async () => {
   let options = {
     storageOptions: {
       skipBackup: true,
       path: 'images',
     },
   };
-  launchImageLibrary(options, response => {
+  await launchImageLibrary(options, response => {
     if (response.didCancel) {
       console.log('User cancelled image picker');
     } else if (response.error) {
