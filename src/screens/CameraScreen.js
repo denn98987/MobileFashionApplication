@@ -32,11 +32,19 @@ const CameraScreen = ({navigation}) => {
           }}
         />
         <Button
-          title="Take photo"
+          title="Начать поиск"
           onPress={async () => {
             const photo = await camera.takePictureAsync();
-            navigation.navigate('PhotoScreen', {inputPhoto: photo});
-            await postData(photo);
+            const response = await postData(photo);
+            console.log(
+              'Arguments in camera screen for output:',
+              response,
+              photo,
+            );
+            navigation.navigate('PhotoScreen', {
+              inputPhoto: photo,
+              links: response,
+            });
             await AddImageToAlbum(photo);
           }}
         />

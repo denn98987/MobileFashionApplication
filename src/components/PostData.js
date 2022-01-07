@@ -1,21 +1,23 @@
 import React from 'react';
 
-const handleResponse = ({target}) => {
-  console.log(target.responseText);
-};
-
-const postData = photoData => {
+const postData = async photoData => {
   let image = {
     uri: photoData.uri,
     type: 'image/jpeg',
     name: 'photo.jpg',
   };
-  const xhr = new XMLHttpRequest();
   const data = new FormData();
   data.append('image', image);
-  xhr.addEventListener('load', handleResponse);
-  xhr.open('POST', 'https://product-detecting.herokuapp.com/api/image');
-  xhr.send(data);
+  let response = await fetch(
+    'https://product-detecting.herokuapp.com/api/image',
+    {
+      method: 'POST',
+      body: data,
+    },
+  );
+  let json = await response.json();
+  console.log('in postData:', response, json);
+  return json;
 };
 
 export default postData;

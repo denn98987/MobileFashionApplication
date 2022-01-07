@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Button, TouchableOpacity, View} from 'react-native';
+import {Button, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import takePhotoFromGallery from '../components/TakePhotoFromGallery';
 import {ShowHistory, TakeAssetsFromAlbum} from '../components/HistoryAlbum';
 import {useIsFocused} from '@react-navigation/core';
@@ -25,22 +25,35 @@ const MainScreen = ({navigation}) => {
     <View>
       <TouchableOpacity>
         <Button
-          title="Launch Camera"
+          title="Подключить камеру"
           onPress={async () => {
             navigation.navigate('Camera');
             await updateHistory();
           }}
         />
         <Button
-          title="Take photo from gallery"
+          title="Взять фото из галлереи"
           onPress={async () => {
             await takePhotoFromGallery();
             await updateHistory();
           }}
         />
-        {isFocused && <ShowHistory assets={assetsInAlbum} />}
+        <Text style={styles.boldText}>Последние поиски</Text>
+        {isFocused && (
+          <ShowHistory assets={assetsInAlbum} navigation={navigation} />
+        )}
       </TouchableOpacity>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  boldText: {
+    fontWeight: 'bold',
+    fontSize: 24,
+    marginTop: 10,
+    marginLeft: 20,
+  },
+});
+
 export default MainScreen;

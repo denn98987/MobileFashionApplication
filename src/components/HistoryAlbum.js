@@ -5,6 +5,7 @@ import {
   Image,
   ScrollView,
   View,
+  TouchableOpacity,
 } from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
 
@@ -28,7 +29,11 @@ const askPermission = async () => {
 const TakeAssetsFromAlbum = async () => {
   if (await askPermission()) {
     const album = await MediaLibrary.getAlbumAsync(albumName);
-    const assetsInAlbum = await MediaLibrary.getAssetsAsync({album});
+    const assetsInAlbum = await MediaLibrary.getAssetsAsync({
+      album: album,
+      sortBy: 'creationTime',
+      first: 4,
+    });
     if (album) {
       return assetsInAlbum;
     } else {
@@ -40,7 +45,6 @@ const TakeAssetsFromAlbum = async () => {
 const AddImageToAlbum = async photo => {
   const album = await MediaLibrary.getAlbumAsync(albumName);
   const asset = await MediaLibrary.createAssetAsync(photo.uri);
-  console.log('new image in album');
   if (album) {
     await MediaLibrary.addAssetsToAlbumAsync(asset, album, false);
   } else {
@@ -48,7 +52,7 @@ const AddImageToAlbum = async photo => {
   }
 };
 
-const ShowHistory = ({assets}) => {
+const ShowHistory = ({assets, navigation}) => {
   const [loading, setLoading] = React.useState(false);
   const [permission, setPermissions] = React.useState(false);
 
@@ -72,7 +76,13 @@ const ShowHistory = ({assets}) => {
         horizontal={false}>
         {assets.assets.map((asset, i) => {
           return (
-            <View key={i}>
+            <TouchableOpacity
+              key={i}
+              /*onPress={() =>
+                navigation.navigate('HistoryPhotoScreen', {
+                  inputPhotoUri: asset.uri,
+                })}*/
+            >
               <Image
                 source={{uri: asset.uri}}
                 style={styles.Image}
@@ -80,7 +90,7 @@ const ShowHistory = ({assets}) => {
                 onLoadEnd={() => setLoading(false)}
               />
               {loading && <ActivityIndicator color="green" size="large" />}
-            </View>
+            </TouchableOpacity>
           );
         })}
       </ScrollView>
@@ -105,7 +115,7 @@ const styles = StyleSheet.create({
   Image: {
     width: 110,
     height: 140,
-    margin: 10,
+    margin: 7,
     borderRadius: 10,
   },
 });
