@@ -8,6 +8,8 @@ import {
   View,
   Text,
   Image,
+  Linking,
+  StyleSheet,
   ActivityIndicator,
 } from 'react-native';
 
@@ -17,26 +19,48 @@ const Item = ({title}) => (
   </View>
 );
 
+const handleClick = url => {
+  Linking.canOpenURL(url).then(supported => {
+    if (supported) {
+      Linking.openURL(url);
+    } else {
+      console.log("Don't know how to open URI: " + url);
+    }
+  });
+};
+
+const urlParse = urlText => {
+  return urlText.split('/')[2];
+};
+
 const PhotoScreen = ({route, navigation}) => {
+  const links =
+    route.params.links.shops.length > 0
+      ? route.params.links.shops.slice(0, 6)
+      : route.params.links.links.slice(0, 6);
+  const [loading, setLoading] = React.useState(false);
   const renderItem = ({item}) => <Item title={item.title} />;
   console.log('Params for PhotoScreen:', route.params);
   return (
-    <ScrollView
-      style={{
-        backgroundColor: 'transparent',
-        flex: 1,
-        width: '100%',
-        height: '100%',
-      }}>
-      <ImageBackground
-        source={{uri: route.params.inputPhoto.uri}}
-        style={{
-          flex: 1,
-        }}
-      />
-      <ScrollView>
-        {route.params.links.links.map((link, i) => {
-          return <Text key={i}>{link}</Text>;
+    <ScrollView>
+      <Image source={{uri: route.params.inputPhoto.uri}} />
+      <ScrollView style={styles.linksContainer} horizontal={true}>
+        {links.map((link, i) => {
+          return (
+            <TouchableOpacity
+              style={styles.linkItem}
+              onPress={() => handleClick(link.href)}
+              key={i}>
+              <Image
+                source={{uri: link.icon}}
+                style={styles.productIcon}
+                onLoadStart={() => setLoading(true)}
+                onLoadEnd={() => setLoading(false)}
+              />
+              <Text>{urlParse(link.href)}</Text>
+              {loading && <ActivityIndicator color="green" size="large" />}
+            </TouchableOpacity>
+          );
         })}
       </ScrollView>
 
@@ -49,5 +73,23 @@ const PhotoScreen = ({route, navigation}) => {
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  linkItem: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 10,
+  },
+  linksContainer: {
+    padding: 10,
+  },
+  productIcon: {
+    width: 110,
+    height: 140,
+    margin: 7,
+    borderRadius: 10,
+  },
+});
 
 export default PhotoScreen;
