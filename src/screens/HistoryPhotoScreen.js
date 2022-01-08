@@ -1,6 +1,12 @@
 import React from 'react';
-import {Button, ImageBackground, TouchableOpacity, View} from 'react-native';
+import {
+  ImageBackground,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import postData from '../components/PostData';
+import {Button} from 'react-native-paper';
 
 const HistoryPhotoScreen = ({route, navigation}) => {
   return (
@@ -23,15 +29,25 @@ const HistoryPhotoScreen = ({route, navigation}) => {
           onPress={() => navigation.navigate('MainScreen')}
         />
         <Button
-          title="Начать поиск"
+          style={styles.buttonStyle}
+          icon="search"
+          mode="outline"
           onPress={async () => {
             await postData(route.params.inputPhotoUri);
             navigation.navigate('MainScreen');
-          }}
-        />
+          }}>
+          Начать поиск
+        </Button>
       </TouchableOpacity>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  buttonStyle: {
+    marginHorizontal: 30,
+    marginVertical: 5,
+  },
+});
 
 export default HistoryPhotoScreen;

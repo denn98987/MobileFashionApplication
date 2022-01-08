@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
-import {Button, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Button} from 'react-native-paper';
 import takePhotoFromGallery from '../components/TakePhotoFromGallery';
 import {
   AddImageToAlbum,
@@ -14,6 +15,10 @@ const MainScreen = ({navigation}) => {
   const [assetsInAlbum, updateAssetsList] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const isFocused = useIsFocused();
+  navigation.setOptions({
+    title: 'Главная',
+    headerShown: false,
+  });
 
   useEffect(() => {
     const getAssets = async () => {
@@ -29,7 +34,7 @@ const MainScreen = ({navigation}) => {
   };
 
   return (
-    <View>
+    <View style={{marginTop: 20}}>
       <TouchableOpacity>
         {loading && (
           <Spinner
@@ -39,14 +44,20 @@ const MainScreen = ({navigation}) => {
           />
         )}
         <Button
-          title="Подключить камеру"
+          style={styles.buttonStyle}
+          icon="camera"
+          mode="contained"
           onPress={async () => {
             navigation.navigate('Camera');
             await updateHistory();
-          }}
-        />
+          }}>
+          Сделать фото
+        </Button>
+
         <Button
-          title="Взять фото из галлереи"
+          style={styles.buttonStyle}
+          icon="image"
+          mode="outlined"
           onPress={async () => {
             const galleryPhoto = await takePhotoFromGallery();
             if (galleryPhoto) {
@@ -66,8 +77,9 @@ const MainScreen = ({navigation}) => {
               await AddImageToAlbum(galleryPhoto);
               await updateHistory();
             }
-          }}
-        />
+          }}>
+          Взять из галлереи
+        </Button>
         <Text style={styles.boldText}>Последние поиски</Text>
         {isFocused && (
           <ShowHistory assets={assetsInAlbum} navigation={navigation} />
@@ -83,6 +95,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginTop: 10,
     marginLeft: 20,
+  },
+  buttonStyle: {
+    marginHorizontal: 30,
+    marginVertical: 5,
   },
 });
 

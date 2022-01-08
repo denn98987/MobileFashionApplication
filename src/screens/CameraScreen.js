@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View, Button} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Camera} from 'expo-camera';
 import {useIsFocused} from '@react-navigation/core';
 import postData from '../components/PostData';
 import {AddImageToAlbum} from '../components/HistoryAlbum';
+import {Button} from 'react-native-paper';
 
 const CameraScreen = ({navigation}) => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -41,7 +42,9 @@ const CameraScreen = ({navigation}) => {
           }}
         />
         <Button
-          title="Начать поиск"
+          style={styles.buttonStyle}
+          mode="contained"
+          icon="image-search"
           onPress={async () => {
             const photo = await camera.takePictureAsync();
             setLoading(true);
@@ -57,8 +60,9 @@ const CameraScreen = ({navigation}) => {
               links: response,
             });
             await AddImageToAlbum(photo);
-          }}
-        />
+          }}>
+          Начать поиск
+        </Button>
       </View>
     );
   } else {
@@ -73,6 +77,10 @@ const styles = StyleSheet.create({
   },
   spinnerTextStyle: {
     color: '#FFF',
+  },
+  buttonStyle: {
+    marginHorizontal: 30,
+    marginVertical: 5,
   },
 });
 

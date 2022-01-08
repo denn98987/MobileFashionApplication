@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Button,
   ScrollView,
   TouchableOpacity,
   View,
@@ -9,6 +8,7 @@ import {
   Linking,
   StyleSheet,
 } from 'react-native';
+import {Button} from 'react-native-paper';
 
 const handleClick = url => {
   Linking.canOpenURL(url).then(supported => {
@@ -54,9 +54,11 @@ const PhotoScreen = ({route, navigation}) => {
 
       <TouchableOpacity>
         <Button
-          title="Сделать новое фото"
-          onPress={() => navigation.navigate('Camera')}
-        />
+          style={styles.buttonStyle}
+          mode="outlined"
+          onPress={() => navigation.navigate('Camera')}>
+          Сделать новое фото
+        </Button>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -86,6 +88,10 @@ const styles = StyleSheet.create({
   inputImage: {
     width: 300,
     height: 270,
+  },
+  buttonStyle: {
+    marginHorizontal: 30,
+    marginVertical: 5,
   },
 });
 

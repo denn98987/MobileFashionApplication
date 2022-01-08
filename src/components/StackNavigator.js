@@ -12,10 +12,22 @@ const StackNavigator = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Main" component={MainScreen} />
-      <Stack.Screen name="Camera" component={CameraScreen} />
-      <Stack.Screen name="PhotoScreen" component={PhotoScreen} />
+      <Stack.Screen
+        name="Camera"
+        component={CameraScreen}
+        options={{title: 'Камера'}}
+      />
+      <Stack.Screen
+        name="PhotoScreen"
+        component={PhotoScreen}
+        options={{title: 'Результат поиска'}}
+      />
       <Stack.Screen name="HistoryPhotoScreen" component={HistoryPhotoScreen} />
-      <Stack.Screen name="ShowHistory" component={ShowHistory} />
+      <Stack.Screen
+        name="ShowHistory"
+        component={ShowHistory}
+        options={{title: 'История'}}
+      />
     </Stack.Navigator>
   );
 };
