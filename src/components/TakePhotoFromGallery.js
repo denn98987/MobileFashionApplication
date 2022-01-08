@@ -1,9 +1,8 @@
 import React from 'react';
 import {launchImageLibrary} from 'react-native-image-picker';
-import postData from './PostData';
-import {AddImageToAlbum} from './HistoryAlbum';
 
 const takePhotoFromGallery = async () => {
+  let outputPhotoData;
   let options = {
     storageOptions: {
       skipBackup: true,
@@ -19,10 +18,10 @@ const takePhotoFromGallery = async () => {
       console.log('User tapped custom button: ', response.customButton);
       alert(response.customButton);
     } else {
-      postData(response.assets[0]);
-      AddImageToAlbum(response.assets[0]);
+      outputPhotoData = response.assets[0];
     }
   });
+  return outputPhotoData;
 };
 
 export default takePhotoFromGallery;

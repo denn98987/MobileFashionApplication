@@ -1,11 +1,18 @@
 import React, {useEffect} from 'react';
 import {Button, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import takePhotoFromGallery from '../components/TakePhotoFromGallery';
-import {ShowHistory, TakeAssetsFromAlbum} from '../components/HistoryAlbum';
+import {
+  AddImageToAlbum,
+  ShowHistory,
+  TakeAssetsFromAlbum,
+} from '../components/HistoryAlbum';
 import {useIsFocused} from '@react-navigation/core';
+import postData from '../components/PostData';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const MainScreen = ({navigation}) => {
   const [assetsInAlbum, updateAssetsList] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -24,6 +31,13 @@ const MainScreen = ({navigation}) => {
   return (
     <View>
       <TouchableOpacity>
+        {loading && (
+          <Spinner
+            visible={loading}
+            textContent={'Идет поиск...'}
+            textStyle={styles.spinnerTextStyle}
+          />
+        )}
         <Button
           title="Подключить камеру"
           onPress={async () => {
@@ -34,8 +48,24 @@ const MainScreen = ({navigation}) => {
         <Button
           title="Взять фото из галлереи"
           onPress={async () => {
-            await takePhotoFromGallery();
-            await updateHistory();
+            const galleryPhoto = await takePhotoFromGallery();
+            if (galleryPhoto) {
+              console.log('Gallery photo in main screen:', galleryPhoto);
+              setLoading(true);
+              const response = await postData(galleryPhoto);
+              setLoading(false);
+              console.log(
+                'Arguments in gallery screen for output:',
+                response,
+                galleryPhoto,
+              );
+              navigation.navigate('PhotoScreen', {
+                inputPhoto: galleryPhoto,
+                links: response,
+              });
+              await AddImageToAlbum(galleryPhoto);
+              await updateHistory();
+            }
           }}
         />
         <Text style={styles.boldText}>Последние поиски</Text>

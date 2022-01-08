@@ -1,8 +1,6 @@
 import React from 'react';
 import {
   Button,
-  FlatList,
-  ImageBackground,
   ScrollView,
   TouchableOpacity,
   View,
@@ -10,14 +8,7 @@ import {
   Image,
   Linking,
   StyleSheet,
-  ActivityIndicator,
 } from 'react-native';
-
-const Item = ({title}) => (
-  <View>
-    <Text>{title}</Text>
-  </View>
-);
 
 const handleClick = url => {
   Linking.canOpenURL(url).then(supported => {
@@ -38,7 +29,6 @@ const PhotoScreen = ({route, navigation}) => {
     route.params.links.shops.length > 0
       ? route.params.links.shops.slice(0, 5)
       : route.params.links.links.slice(0, 5);
-  const [loading, setLoading] = React.useState(false);
   console.log('Params for PhotoScreen:', route.params);
   return (
     <ScrollView>
@@ -55,14 +45,8 @@ const PhotoScreen = ({route, navigation}) => {
               style={styles.linkItem}
               onPress={() => handleClick(link.href)}
               key={i}>
-              <Image
-                source={{uri: link.icon}}
-                style={styles.productIcon}
-                onLoadStart={() => setLoading(true)}
-                onLoadEnd={() => setLoading(false)}
-              />
+              <Image source={{uri: link.icon}} style={styles.productIcon} />
               <Text>{urlParse(link.href)}</Text>
-              {loading && <ActivityIndicator color="green" size="large" />}
             </TouchableOpacity>
           );
         })}
