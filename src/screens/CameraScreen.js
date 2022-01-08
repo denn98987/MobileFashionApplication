@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, Button} from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {Camera} from 'expo-camera';
 import {useIsFocused} from '@react-navigation/core';
 import postData from '../components/PostData';
@@ -7,6 +8,7 @@ import {AddImageToAlbum} from '../components/HistoryAlbum';
 
 const CameraScreen = ({navigation}) => {
   const [hasPermission, setHasPermission] = useState(null);
+  const [loading, setLoading] = React.useState(false);
   const isFocused = useIsFocused();
   let camera: Camera;
 
@@ -25,6 +27,13 @@ const CameraScreen = ({navigation}) => {
   } else if (hasPermission !== null && isFocused) {
     return (
       <View style={styles.container}>
+        {loading && (
+          <Spinner
+            visible={loading}
+            textContent={'Идет поиск...'}
+            textStyle={styles.spinnerTextStyle}
+          />
+        )}
         <Camera
           style={styles.camera}
           ref={r => {
@@ -35,7 +44,9 @@ const CameraScreen = ({navigation}) => {
           title="Начать поиск"
           onPress={async () => {
             const photo = await camera.takePictureAsync();
+            setLoading(true);
             const response = await postData(photo);
+            setLoading(false);
             console.log(
               'Arguments in camera screen for output:',
               response,
@@ -59,6 +70,9 @@ const styles = StyleSheet.create({
   camera: {
     width: '100%',
     height: '90%',
+  },
+  spinnerTextStyle: {
+    color: '#FFF',
   },
 });
 

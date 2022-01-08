@@ -36,14 +36,18 @@ const urlParse = urlText => {
 const PhotoScreen = ({route, navigation}) => {
   const links =
     route.params.links.shops.length > 0
-      ? route.params.links.shops.slice(0, 6)
-      : route.params.links.links.slice(0, 6);
+      ? route.params.links.shops.slice(0, 5)
+      : route.params.links.links.slice(0, 5);
   const [loading, setLoading] = React.useState(false);
-  const renderItem = ({item}) => <Item title={item.title} />;
   console.log('Params for PhotoScreen:', route.params);
   return (
     <ScrollView>
-      <Image source={{uri: route.params.inputPhoto.uri}} />
+      <View style={styles.inputImageContainer}>
+        <Image
+          style={styles.inputImage}
+          source={{uri: route.params.inputPhoto.uri}}
+        />
+      </View>
       <ScrollView style={styles.linksContainer} horizontal={true}>
         {links.map((link, i) => {
           return (
@@ -89,6 +93,15 @@ const styles = StyleSheet.create({
     height: 140,
     margin: 7,
     borderRadius: 10,
+  },
+  inputImageContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  inputImage: {
+    width: 300,
+    height: 270,
   },
 });
 
