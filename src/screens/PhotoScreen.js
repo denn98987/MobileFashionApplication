@@ -25,10 +25,7 @@ const urlParse = urlText => {
 };
 
 const PhotoScreen = ({route, navigation}) => {
-  const links =
-    route.params.links.shops.length > 0
-      ? route.params.links.shops.slice(0, 5)
-      : route.params.links.links.slice(0, 5);
+  const links = route.params.links.links;
   console.log('Params for PhotoScreen:', route.params);
   return (
     <ScrollView>

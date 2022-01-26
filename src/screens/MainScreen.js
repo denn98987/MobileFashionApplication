@@ -15,10 +15,6 @@ const MainScreen = ({navigation}) => {
   const [assetsInAlbum, updateAssetsList] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const isFocused = useIsFocused();
-  navigation.setOptions({
-    title: 'Главная',
-    headerShown: false,
-  });
 
   useEffect(() => {
     const getAssets = async () => {

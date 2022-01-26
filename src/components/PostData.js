@@ -8,13 +8,10 @@ const postData = async photoData => {
   };
   const data = new FormData();
   data.append('image', image);
-  let response = await fetch(
-    'https://product-detecting.herokuapp.com/api/image',
-    {
-      method: 'POST',
-      body: data,
-    },
-  );
+  let response = await fetch('http://192.168.1.9:8020/api/image', {
+    method: 'POST',
+    body: data,
+  });
   console.log('Post data response: ', response);
   let json = await response.json();
   console.log('in postData:', response, json);
